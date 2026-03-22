@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: vantage
+    env: docker
+    dockerfilePath: ./Dockerfile
+    # Render will auto-deploy when you push to the main branch.
+    # Set the env vars below in the Render dashboard (Environment tab).
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/vantage.db  # mounted disk path — see disk section
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false  # set in Render dashboard
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+    disk:
+      name: vantage-data
+      mountPath: /data
+      sizeGB: 1   # 1 GB persistent disk (requires paid Render plan)
