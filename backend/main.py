@@ -18,7 +18,7 @@ load_dotenv()
 
 import models
 from database import engine, SessionLocal
-from routers import admin, customers, direct_reports, projects, tasks, dashboard
+from routers import admin, customers, direct_reports, projects, tasks, dashboard, meetings
 
 logger = logging.getLogger(__name__)
 
@@ -162,6 +162,7 @@ app.include_router(direct_reports.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(dashboard.router)
+app.include_router(meetings.router)
 
 
 # ─────────────────────────────────────────

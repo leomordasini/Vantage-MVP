@@ -100,3 +100,18 @@ export const tasksApi = {
   update: (id, data) => api.patch(`/tasks/${id}/`, data),
   delete: (id) => api.delete(`/tasks/${id}/`),
 }
+
+// ─────────────────────────────────────────
+// Meetings
+// ─────────────────────────────────────────
+export const meetingsApi = {
+  list: () => api.get('/meetings/'),
+  get: (id) => api.get(`/meetings/${id}/`),
+  create: (data) => api.post('/meetings/', data),
+  update: (id, data) => api.patch(`/meetings/${id}/`, data),
+  delete: (id) => api.delete(`/meetings/${id}/`),
+  uploadTranscript: (id, formData) =>
+    api.post(`/meetings/${id}/transcript/upload/`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+}

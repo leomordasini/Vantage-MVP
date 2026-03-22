@@ -178,3 +178,25 @@ class Task(Base):
     customer = relationship("Customer")
     direct_report = relationship("DirectReport")
     project = relationship("Project")
+
+
+class Meeting(Base):
+    __tablename__ = "meetings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    date = Column(DateTime, nullable=False)
+    duration_minutes = Column(Integer, nullable=True)
+    attendees = Column(String, nullable=True)  # comma-separated names/emails
+    # meeting_type: "customer", "direct_report", "other"
+    meeting_type = Column(String, default="other", nullable=False)
+    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=True)
+    direct_report_id = Column(Integer, ForeignKey("direct_reports.id"), nullable=True)
+    google_event_id = Column(String, nullable=True)
+    transcript = Column(Text, nullable=True)
+    # transcript_source: "paste", "upload"
+    transcript_source = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    customer = relationship("Customer")
+    direct_report = relationship("DirectReport")

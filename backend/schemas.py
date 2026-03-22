@@ -249,6 +249,51 @@ class TaskResponse(TaskCreate):
 
 
 # ─────────────────────────────────────────
+# Meeting
+# ─────────────────────────────────────────
+
+class MeetingCreate(BaseModel):
+    title: str
+    date: datetime
+    duration_minutes: Optional[int] = None
+    attendees: Optional[str] = None
+    meeting_type: str = "other"  # "customer", "direct_report", "other"
+    customer_id: Optional[int] = None
+    direct_report_id: Optional[int] = None
+    google_event_id: Optional[str] = None
+
+
+class MeetingPatch(BaseModel):
+    title: Optional[str] = None
+    date: Optional[datetime] = None
+    duration_minutes: Optional[int] = None
+    attendees: Optional[str] = None
+    meeting_type: Optional[str] = None
+    customer_id: Optional[int] = None
+    direct_report_id: Optional[int] = None
+    transcript: Optional[str] = None
+    transcript_source: Optional[str] = None
+
+
+class MeetingResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    title: str
+    date: datetime
+    duration_minutes: Optional[int] = None
+    attendees: Optional[str] = None
+    meeting_type: str
+    customer_id: Optional[int] = None
+    direct_report_id: Optional[int] = None
+    google_event_id: Optional[str] = None
+    transcript: Optional[str] = None
+    transcript_source: Optional[str] = None
+    created_at: datetime
+    customer_name: Optional[str] = None
+    direct_report_name: Optional[str] = None
+
+
+# ─────────────────────────────────────────
 # Dashboard
 # ─────────────────────────────────────────
 

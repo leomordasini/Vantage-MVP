@@ -9,6 +9,8 @@ import DirectReportDetail from './pages/DirectReportDetail'
 import Projects from './pages/Projects'
 import ProjectDetail from './pages/ProjectDetail'
 import Tasks from './pages/Tasks'
+import Meetings from './pages/Meetings'
+import MeetingDetail from './pages/MeetingDetail'
 
 export default function App() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
         <Route path="projects" element={<Projects />} />
         <Route path="projects/:id" element={<ProjectDetail />} />
         <Route path="tasks" element={<Tasks />} />
+        <Route path="meetings" element={<Meetings />} />
+        <Route path="meetings/:id" element={<MeetingDetail />} />
       </Route>
     </Routes>
   )
