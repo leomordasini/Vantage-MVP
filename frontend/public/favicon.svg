@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background -->
+  <rect width="64" height="64" rx="12" fill="#1e1b4b"/>
+
+  <!-- Padlock body -->
+  <rect x="12" y="30" width="40" height="28" rx="5" fill="#4f4f5a" stroke="#7c7c8a" stroke-width="1.5"/>
+
+  <!-- Padlock shackle (arc) -->
+  <path d="M20 30 L20 20 Q20 10 32 10 Q44 10 44 20 L44 30"
+        fill="none" stroke="#7c7c8a" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Face silhouette inside lock body -->
+  <!-- Head -->
+  <ellipse cx="32" cy="38" rx="8" ry="9" fill="#c8a882"/>
+  <!-- Neck -->
+  <rect x="29" y="46" width="6" height="4" rx="1" fill="#c8a882"/>
+  <!-- Ears -->
+  <circle cx="24" cy="38" r="1.5" fill="#c8a882"/>
+  <circle cx="40" cy="38" r="1.5" fill="#c8a882"/>
+  <!-- Eyes -->
+  <ellipse cx="28.5" cy="36.5" rx="2" ry="2" fill="#2d2926"/>
+  <ellipse cx="35.5" cy="36.5" rx="2" ry="2" fill="#2d2926"/>
+  <!-- Nose ring hint -->
+  <circle cx="32" cy="41" r="1" fill="none" stroke="#8a8a8a" stroke-width="0.8"/>
+  <!-- Keyhole -->
+  <circle cx="32" cy="52" r="2.5" fill="#1e1b4b"/>
+  <rect x="30.5" y="52" width="3" height="4" rx="0.5" fill="#1e1b4b"/>
+</svg>

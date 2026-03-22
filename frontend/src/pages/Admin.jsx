@@ -277,7 +277,7 @@ export default function Admin() {
   return (
     <div className="p-8 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin</h1>
-      <p className="text-sm text-gray-500 mb-8">Manage the core entities used across Vantage.</p>
+      <p className="text-sm text-gray-500 mb-8">Manage the core entities used across LIL.</p>
 
       <div className="space-y-10">
         <CustomersPanel />

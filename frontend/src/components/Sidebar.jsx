@@ -34,7 +34,10 @@ export default function Sidebar() {
     <aside className="w-56 bg-slate-900 text-slate-100 flex flex-col flex-shrink-0">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-slate-700">
-        <span className="text-lg font-bold tracking-tight text-white">⚡ Vantage</span>
+        <div>
+          <span className="text-lg font-bold tracking-tight text-white">🔒 LIL</span>
+          <p className="text-xs text-slate-400 mt-0.5 tracking-wide">Locked-In Leo</p>
+        </div>
       </div>
 
       {/* Nav */}
