@@ -1,11 +1,14 @@
 # ─── Stage 1: Build React frontend ───────────────────────────────────────────
 FROM node:20-slim AS frontend-builder
 
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ ./
-RUN npm run build
+WORKDIR /build
+
+# Copy entire repo into the build stage
+COPY . .
+
+# Install and build from WITHIN the frontend subdirectory
+# This ensures Vite's root is /build/frontend, where index.html and src/ live
+RUN cd frontend && npm install && npm run build
 
 # ─── Stage 2: Python backend + embedded frontend ──────────────────────────────
 FROM python:3.12-slim
@@ -19,8 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend source
 COPY backend/ .
 
-# Embed the React build as static files served by FastAPI
-COPY --from=frontend-builder /app/frontend/dist ./static
+# Embed the React build (output is in /build/frontend/dist)
+COPY --from=frontend-builder /build/frontend/dist ./static
 
 # Render.com uses PORT env var; default to 8000
 ENV PORT=8000
