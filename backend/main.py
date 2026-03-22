@@ -165,6 +165,14 @@ app.include_router(dashboard.router)
 app.include_router(meetings.router)
 
 
+@app.get("/api/config/")
+def get_config():
+    """Return runtime config values to the frontend."""
+    return {
+        "google_client_id": os.getenv("GOOGLE_CLIENT_ID", ""),
+    }
+
+
 # ─────────────────────────────────────────
 # Serve React SPA (production build)
 # ─────────────────────────────────────────

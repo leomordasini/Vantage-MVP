@@ -42,6 +42,7 @@ export default function Meetings() {
   const [calendarLoading, setCalendarLoading] = useState(false)
   const [selectedEvents, setSelectedEvents]   = useState(new Set())
   const [importing, setImporting]             = useState(false)
+  const [googleClientId, setGoogleClientId]   = useState('')
 
   // New meeting form state
   const [form, setForm] = useState({
@@ -52,14 +53,16 @@ export default function Meetings() {
 
   const load = useCallback(async () => {
     try {
-      const [mRes, cRes, drRes] = await Promise.all([
+      const [mRes, cRes, drRes, cfgRes] = await Promise.all([
         meetingsApi.list(),
         customersApi.list(),
         directReportsApi.list(),
+        fetch('/api/config/').then(r => r.json()).catch(() => ({})),
       ])
       setMeetings(mRes.data)
       setCustomers(cRes.data)
       setDirectReports(drRes.data)
+      setGoogleClientId(cfgRes.google_client_id || '')
     } finally {
       setLoading(false)
     }
@@ -109,7 +112,7 @@ export default function Meetings() {
 
   // ── Google Calendar sync ─────────────────────────────────────────────────
   function syncFromCalendar() {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+    const clientId = googleClientId
     if (!clientId) {
       alert('Google Calendar is not configured.\n\nTo enable it:\n1. Create a Google Cloud project\n2. Enable the Google Calendar API\n3. Create OAuth 2.0 credentials (Web Application)\n4. Add VITE_GOOGLE_CLIENT_ID to your Render environment variables')
       return
