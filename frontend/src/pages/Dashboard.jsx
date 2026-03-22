@@ -104,16 +104,52 @@ export default function Dashboard() {
           tasks_due_today, tasks_due_this_week, upcoming_birthdays, recent_dr_activity } = data
 
   const today = new Date()
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 17 ? 'Good afternoon' : 'Good evening'
+  const hour = today.getHours()
+  const timeGreeting = hour < 12 ? "Rise and grind 🌅" : hour < 17 ? "You're in the zone 🔒" : "Late night locked in 🌙"
+  const overdueCount = stats.overdue_tasks
+  const motiveLine = overdueCount > 0
+    ? `${overdueCount} overdue task${overdueCount > 1 ? 's' : ''} — handle it, Leo.`
+    : stats.at_risk_customers > 0
+    ? `${stats.at_risk_customers} customer${stats.at_risk_customers > 1 ? 's' : ''} need your attention.`
+    : "Clean slate. Stay locked in. 🔐"
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{greeting}, Leonardo 👋</h1>
-        <p className="text-sm text-gray-400 mt-1">
-          {today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-        </p>
+      <div className="mb-8 flex items-center gap-5">
+        {/* Inline mini logo */}
+        <div className="flex-shrink-0">
+          <svg viewBox="0 0 64 64" className="w-14 h-14 drop-shadow-md" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="none" stroke="#6366f1" strokeWidth="1.5" opacity="0.4"/>
+            <rect x="10" y="30" width="44" height="30" rx="6" fill="#3f3f50" stroke="#6b6b82" strokeWidth="1.5"/>
+            <path d="M19 30 L19 19 Q19 8 32 8 Q45 8 45 19 L45 30" fill="none" stroke="#6b6b82" strokeWidth="5.5" strokeLinecap="round"/>
+            <ellipse cx="32" cy="39" rx="9" ry="10" fill="#c9a87c"/>
+            <ellipse cx="23" cy="39" r="2" fill="#c9a87c"/>
+            <ellipse cx="41" cy="39" r="2" fill="#c9a87c"/>
+            <circle cx="23" cy="39" r="0.8" fill="#888"/>
+            <circle cx="41" cy="39" r="0.8" fill="#888"/>
+            <ellipse cx="28.5" cy="37" rx="2.2" ry="2.2" fill="#1a1a2e"/>
+            <ellipse cx="35.5" cy="37" rx="2.2" ry="2.2" fill="#1a1a2e"/>
+            <circle cx="29.2" cy="36.4" r="0.6" fill="white" opacity="0.7"/>
+            <circle cx="36.2" cy="36.4" r="0.6" fill="white" opacity="0.7"/>
+            <circle cx="32" cy="41.5" r="1.3" fill="none" stroke="#9ca3af" strokeWidth="0.9"/>
+            <path d="M28.5 45 Q32 46 35.5 45" fill="none" stroke="#8a6a4a" strokeWidth="1" strokeLinecap="round"/>
+            <ellipse cx="32" cy="29.5" rx="9" ry="4" fill="#1a1a1a"/>
+            <circle cx="32" cy="54" r="3" fill="#1e1b4b"/>
+            <rect x="30.5" y="54" width="3" height="4.5" rx="0.8" fill="#1e1b4b"/>
+          </svg>
+        </div>
+        <div>
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h1 className="text-3xl font-black tracking-tight text-gray-900">Locked-In Leo</h1>
+            <span className="text-sm font-semibold text-indigo-500 uppercase tracking-widest">{timeGreeting}</span>
+          </div>
+          <p className="text-sm text-gray-400 mt-0.5">
+            {today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+            <span className="mx-2">·</span>
+            <span className={overdueCount > 0 ? 'text-red-500 font-medium' : 'text-gray-400'}>{motiveLine}</span>
+          </p>
+        </div>
       </div>
 
       {/* Stats row */}

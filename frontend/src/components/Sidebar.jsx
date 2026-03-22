@@ -33,11 +33,43 @@ export default function Sidebar() {
   return (
     <aside className="w-56 bg-slate-900 text-slate-100 flex flex-col flex-shrink-0">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-slate-700">
-        <div>
-          <span className="text-lg font-bold tracking-tight text-white">🔒 LIL</span>
-          <p className="text-xs text-slate-400 mt-0.5 tracking-wide">Locked-In Leo</p>
-        </div>
+      <div className="px-4 pt-6 pb-5 border-b border-slate-700 flex flex-col items-center text-center">
+        {/* Face-in-lock SVG — inline so it renders instantly with no extra request */}
+        <svg viewBox="0 0 64 64" className="w-16 h-16 mb-3 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
+          {/* Outer glow ring */}
+          <circle cx="32" cy="32" r="30" fill="none" stroke="#6366f1" strokeWidth="1.5" opacity="0.4"/>
+          {/* Lock body */}
+          <rect x="10" y="30" width="44" height="30" rx="6" fill="#3f3f50" stroke="#6b6b82" strokeWidth="1.5"/>
+          {/* Shackle */}
+          <path d="M19 30 L19 19 Q19 8 32 8 Q45 8 45 19 L45 30"
+                fill="none" stroke="#6b6b82" strokeWidth="5.5" strokeLinecap="round"/>
+          {/* Face — skin */}
+          <ellipse cx="32" cy="39" rx="9" ry="10" fill="#c9a87c"/>
+          {/* Ears */}
+          <ellipse cx="23" cy="39" r="2" fill="#c9a87c"/>
+          <ellipse cx="41" cy="39" r="2" fill="#c9a87c"/>
+          {/* Ear studs */}
+          <circle cx="23" cy="39" r="0.8" fill="#888"/>
+          <circle cx="41" cy="39" r="0.8" fill="#888"/>
+          {/* Eyes — slightly skeptical */}
+          <ellipse cx="28.5" cy="37" rx="2.2" ry="2.2" fill="#1a1a2e"/>
+          <ellipse cx="35.5" cy="37" rx="2.2" ry="2.2" fill="#1a1a2e"/>
+          <circle cx="29.2" cy="36.4" r="0.6" fill="white" opacity="0.7"/>
+          <circle cx="36.2" cy="36.4" r="0.6" fill="white" opacity="0.7"/>
+          {/* Nose ring */}
+          <circle cx="32" cy="41.5" r="1.3" fill="none" stroke="#9ca3af" strokeWidth="0.9"/>
+          {/* Mouth — straight, deadpan */}
+          <path d="M28.5 45 Q32 46 35.5 45" fill="none" stroke="#8a6a4a" strokeWidth="1" strokeLinecap="round"/>
+          {/* Hair */}
+          <ellipse cx="32" cy="29.5" rx="9" ry="4" fill="#1a1a1a"/>
+          {/* Keyhole */}
+          <circle cx="32" cy="54" r="3" fill="#1e1b4b"/>
+          <rect x="30.5" y="54" width="3" height="4.5" rx="0.8" fill="#1e1b4b"/>
+        </svg>
+
+        <p className="text-2xl font-black tracking-tighter text-white leading-none">LIL</p>
+        <p className="text-xs font-semibold text-indigo-400 tracking-widest uppercase mt-1">Locked-In Leo</p>
+        <p className="text-xs text-slate-500 mt-1 italic">stay locked. stay winning.</p>
       </div>
 
       {/* Nav */}
