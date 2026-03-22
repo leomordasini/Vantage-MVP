@@ -114,7 +114,7 @@ export default function Meetings() {
   function syncFromCalendar() {
     const clientId = googleClientId
     if (!clientId) {
-      alert('Google Calendar is not configured.\n\nTo enable it:\n1. Create a Google Cloud project\n2. Enable the Google Calendar API\n3. Create OAuth 2.0 credentials (Web Application)\n4. Add VITE_GOOGLE_CLIENT_ID to your Render environment variables')
+      alert('Google Calendar is not configured.\n\nTo enable it:\n1. Create a Google Cloud project\n2. Enable the Google Calendar API\n3. Create OAuth 2.0 credentials (Web Application)\n4. Add GOOGLE_CLIENT_ID to your Render environment variables')
       return
     }
     if (!window.google) {
