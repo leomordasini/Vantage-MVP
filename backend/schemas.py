@@ -95,13 +95,46 @@ class AchievementResponse(AchievementCreate):
 
 
 # ─────────────────────────────────────────
-# Direct Report Detail (with notes + achievements)
+# Direct Report Update Log
+# ─────────────────────────────────────────
+
+class DRUpdateCreate(BaseModel):
+    content: str
+    update_type: str = "general"  # "win", "miss", "feedback", "growth_signal", "career", "general"
+
+
+class DRUpdateResponse(DRUpdateCreate):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    direct_report_id: int
+    created_at: datetime
+
+
+# ─────────────────────────────────────────
+# Direct Report Detail (with notes, achievements, updates)
 # ─────────────────────────────────────────
 
 class DirectReportDetailResponse(DirectReportResponse):
     model_config = ConfigDict(from_attributes=True)
     notes: List[NoteResponse] = []
     achievements: List[AchievementResponse] = []
+    updates: List[DRUpdateResponse] = []
+
+
+# ─────────────────────────────────────────
+# Customer Update Log
+# ─────────────────────────────────────────
+
+class CustomerUpdateCreate(BaseModel):
+    content: str
+    sentiment: str = "neutral"  # "positive", "neutral", "at_risk", "critical"
+
+
+class CustomerUpdateResponse(CustomerUpdateCreate):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    customer_id: int
+    created_at: datetime
 
 
 # ─────────────────────────────────────────
@@ -116,12 +149,13 @@ class CustomerCreate(CustomerBase):
     pass
 
 
-class CustomerUpdate(BaseModel):
+class CustomerPatch(BaseModel):
     name: Optional[str] = None
     tam_id: Optional[int] = None
     last_leadership_checkin: Optional[date] = None
     last_qbr: Optional[date] = None
     last_core_activity_update: Optional[date] = None
+    overall_health: Optional[str] = None
 
 
 class CustomerResponse(CustomerBase):
@@ -132,7 +166,9 @@ class CustomerResponse(CustomerBase):
     last_leadership_checkin: Optional[date] = None
     last_qbr: Optional[date] = None
     last_core_activity_update: Optional[date] = None
+    overall_health: str = "neutral"
     contacts: List[ContactResponse] = []
+    updates: List[CustomerUpdateResponse] = []
 
 
 # ─────────────────────────────────────────
@@ -210,3 +246,54 @@ class TaskResponse(TaskCreate):
     customer: Optional[CustomerBase] = None
     direct_report: Optional[DirectReportBase] = None
     project: Optional[ProjectBase] = None
+
+
+# ─────────────────────────────────────────
+# Dashboard
+# ─────────────────────────────────────────
+
+class DashboardCustomer(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    overall_health: str
+    last_leadership_checkin: Optional[date] = None
+    days_since_checkin: Optional[int] = None
+    tam: Optional[DirectReportBase] = None
+
+
+class DashboardBirthday(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    birthday: date
+    days_until: int
+
+
+class DashboardDRActivity(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    dr_id: int
+    dr_name: str
+    update_type: str
+    content: str
+    created_at: datetime
+
+
+class DashboardStats(BaseModel):
+    total_customers: int
+    total_direct_reports: int
+    open_tasks: int
+    overdue_tasks: int
+    tasks_in_progress: int
+    at_risk_customers: int
+
+
+class DashboardResponse(BaseModel):
+    stats: DashboardStats
+    customers_needing_attention: List[DashboardCustomer]
+    checkin_due: List[DashboardCustomer]
+    tasks_overdue: List[TaskResponse]
+    tasks_due_today: List[TaskResponse]
+    tasks_due_this_week: List[TaskResponse]
+    upcoming_birthdays: List[DashboardBirthday]
+    recent_dr_activity: List[DashboardDRActivity]

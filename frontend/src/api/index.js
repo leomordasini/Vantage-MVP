@@ -3,22 +3,26 @@ import axios from 'axios'
 const api = axios.create({ baseURL: '/api' })
 
 // ─────────────────────────────────────────
+// Dashboard
+// ─────────────────────────────────────────
+export const dashboardApi = {
+  get: () => api.get('/dashboard/'),
+}
+
+// ─────────────────────────────────────────
 // Admin
 // ─────────────────────────────────────────
 export const adminApi = {
-  // Customers
   listCustomers: () => api.get('/admin/customers/'),
   createCustomer: (data) => api.post('/admin/customers/', data),
   updateCustomer: (id, data) => api.put(`/admin/customers/${id}/`, data),
   deleteCustomer: (id) => api.delete(`/admin/customers/${id}/`),
 
-  // Direct Reports
   listDirectReports: () => api.get('/admin/direct-reports/'),
   createDirectReport: (data) => api.post('/admin/direct-reports/', data),
   updateDirectReport: (id, data) => api.put(`/admin/direct-reports/${id}/`, data),
   deleteDirectReport: (id) => api.delete(`/admin/direct-reports/${id}/`),
 
-  // Projects
   listProjects: () => api.get('/admin/projects/'),
   createProject: (data) => api.post('/admin/projects/', data),
   updateProject: (id, data) => api.put(`/admin/projects/${id}/`, data),
@@ -33,6 +37,11 @@ export const customersApi = {
   get: (id) => api.get(`/customers/${id}/`),
   update: (id, data) => api.patch(`/customers/${id}/`, data),
 
+  // Update log
+  addUpdate: (customerId, data) => api.post(`/customers/${customerId}/updates/`, data),
+  deleteUpdate: (customerId, updateId) => api.delete(`/customers/${customerId}/updates/${updateId}/`),
+
+  // Contacts
   addContact: (customerId, data) => api.post(`/customers/${customerId}/contacts/`, data),
   updateContact: (customerId, contactId, data) =>
     api.put(`/customers/${customerId}/contacts/${contactId}/`, data),
@@ -47,6 +56,7 @@ export const directReportsApi = {
   list: () => api.get('/direct-reports/'),
   get: (id) => api.get(`/direct-reports/${id}/`),
 
+  // 1:1 Notes
   addNote: (drId, data) => api.post(`/direct-reports/${drId}/notes/`, data),
   uploadNote: (drId, formData) =>
     api.post(`/direct-reports/${drId}/notes/upload/`, formData, {
@@ -54,12 +64,18 @@ export const directReportsApi = {
     }),
   deleteNote: (drId, noteId) => api.delete(`/direct-reports/${drId}/notes/${noteId}/`),
 
+  // Achievements
   addAchievement: (drId, formData) =>
     api.post(`/direct-reports/${drId}/achievements/`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
   deleteAchievement: (drId, achId) =>
     api.delete(`/direct-reports/${drId}/achievements/${achId}/`),
+
+  // Update log
+  addDrUpdate: (drId, data) => api.post(`/direct-reports/${drId}/updates/`, data),
+  deleteDrUpdate: (drId, updateId) =>
+    api.delete(`/direct-reports/${drId}/updates/${updateId}/`),
 }
 
 // ─────────────────────────────────────────

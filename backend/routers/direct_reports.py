@@ -1,5 +1,5 @@
 """
-Direct Reports router — 1:1 notes (paste or file upload) and achievements (with optional Cloudinary image).
+Direct Reports router — 1:1 notes (paste or file upload), achievements (Cloudinary), and update log.
 """
 
 import os
@@ -17,7 +17,6 @@ import schemas
 
 router = APIRouter(prefix="/api/direct-reports", tags=["direct-reports"])
 
-# Configure Cloudinary from env vars (set at container startup)
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
@@ -41,6 +40,7 @@ def get_direct_report(dr_id: int, db: Session = Depends(get_db)):
         .options(
             joinedload(models.DirectReport.notes),
             joinedload(models.DirectReport.achievements),
+            joinedload(models.DirectReport.updates),
         )
         .filter(models.DirectReport.id == dr_id)
         .first()
@@ -74,10 +74,6 @@ async def upload_note(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    """
-    Upload a .txt or .docx transcript file. The content is extracted and stored as text.
-    note_date must be in YYYY-MM-DD format.
-    """
     dr = db.query(models.DirectReport).filter(models.DirectReport.id == dr_id).first()
     if not dr:
         raise HTTPException(status_code=404, detail="Direct report not found")
@@ -98,7 +94,6 @@ async def upload_note(
         except Exception as exc:
             raise HTTPException(status_code=422, detail=f"Could not parse .docx: {exc}")
     else:
-        # Treat as plain text (UTF-8, fallback to latin-1)
         try:
             content = raw_bytes.decode("utf-8")
         except UnicodeDecodeError:
@@ -194,4 +189,41 @@ def delete_achievement(dr_id: int, achievement_id: int, db: Session = Depends(ge
     if not achievement:
         raise HTTPException(status_code=404, detail="Achievement not found")
     db.delete(achievement)
+    db.commit()
+
+
+# ─────────────────────────────────────────
+# DR Update Log
+# ─────────────────────────────────────────
+
+@router.post("/{dr_id}/updates/", response_model=schemas.DRUpdateResponse, status_code=201)
+def add_dr_update(dr_id: int, payload: schemas.DRUpdateCreate, db: Session = Depends(get_db)):
+    dr = db.query(models.DirectReport).filter(models.DirectReport.id == dr_id).first()
+    if not dr:
+        raise HTTPException(status_code=404, detail="Direct report not found")
+
+    entry = models.DirectReportUpdate(
+        direct_report_id=dr_id,
+        content=payload.content,
+        update_type=payload.update_type,
+    )
+    db.add(entry)
+    db.commit()
+    db.refresh(entry)
+    return entry
+
+
+@router.delete("/{dr_id}/updates/{update_id}/", status_code=204)
+def delete_dr_update(dr_id: int, update_id: int, db: Session = Depends(get_db)):
+    entry = (
+        db.query(models.DirectReportUpdate)
+        .filter(
+            models.DirectReportUpdate.id == update_id,
+            models.DirectReportUpdate.direct_report_id == dr_id,
+        )
+        .first()
+    )
+    if not entry:
+        raise HTTPException(status_code=404, detail="Update not found")
+    db.delete(entry)
     db.commit()
