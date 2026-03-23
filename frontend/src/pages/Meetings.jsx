@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { meetingsApi, customersApi, directReportsApi } from '../api'
 import Modal from '../components/Modal'
@@ -43,6 +43,9 @@ export default function Meetings() {
   const [selectedEvents, setSelectedEvents]   = useState(new Set())
   const [importing, setImporting]             = useState(false)
   const [googleClientId, setGoogleClientId]   = useState('')
+  const [icsImporting, setIcsImporting]       = useState(false)
+  const [icsResult, setIcsResult]             = useState(null)
+  const icsInputRef                           = useRef(null)
 
   // New meeting form state
   const [form, setForm] = useState({
@@ -108,6 +111,30 @@ export default function Meetings() {
     setShowNewModal(false)
     setForm({ title: '', date: '', time: '', duration_minutes: '', attendees: '', meeting_type: 'other', customer_id: '', direct_report_id: '' })
     navigate(`/meetings/${res.data.id}`)
+  }
+
+  // ── ICS file import ──────────────────────────────────────────────────────
+  async function handleIcsUpload(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    setIcsImporting(true)
+    setIcsResult(null)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/meetings/import/ics/', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      setIcsResult(data)
+      load()
+    } catch {
+      setIcsResult({ error: 'Upload failed. Please try again.' })
+    } finally {
+      setIcsImporting(false)
+      if (icsInputRef.current) icsInputRef.current.value = ''
+    }
   }
 
   // ── Google Calendar sync ─────────────────────────────────────────────────
@@ -212,6 +239,22 @@ export default function Meetings() {
         </div>
         <div className="flex gap-2">
           <button
+            onClick={() => icsInputRef.current?.click()}
+            disabled={icsImporting}
+            className="flex items-center gap-2 px-3 py-2 text-sm border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+            title="Import meetings from a .ics file exported from Google Calendar"
+          >
+            <UploadIcon className="w-4 h-4" />
+            {icsImporting ? 'Importing…' : 'Import .ics'}
+          </button>
+          <input
+            ref={icsInputRef}
+            type="file"
+            accept=".ics"
+            className="hidden"
+            onChange={handleIcsUpload}
+          />
+          <button
             onClick={syncFromCalendar}
             disabled={calendarLoading}
             className="flex items-center gap-2 px-3 py-2 text-sm border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
@@ -228,6 +271,20 @@ export default function Meetings() {
           </button>
         </div>
       </div>
+
+      {/* ICS import result banner */}
+      {icsResult && (
+        <div className={`mb-4 px-4 py-3 rounded-lg text-sm flex items-center justify-between ${
+          icsResult.error ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+        }`}>
+          <span>
+            {icsResult.error
+              ? icsResult.error
+              : `Import complete — ${icsResult.created} meeting${icsResult.created !== 1 ? 's' : ''} added, ${icsResult.skipped} already existed`}
+          </span>
+          <button onClick={() => setIcsResult(null)} className="ml-4 opacity-60 hover:opacity-100">✕</button>
+        </div>
+      )}
 
       {/* Filter bar */}
       <div className="flex items-center gap-3 mb-5">
@@ -526,6 +583,15 @@ function CalendarIcon({ className }) {
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  )
+}
+
+function UploadIcon({ className }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
     </svg>
   )
 }
